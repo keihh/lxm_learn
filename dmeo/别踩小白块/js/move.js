@@ -1,61 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>别踩小白块</title>
-</head>
-<style type="text/css">
-	#main {
-		width: 400px;
-		height: 400px;
-		background: gray;
-		border: 1px solid green;
-		position: relative;
-	}
-
-	#container {
-		width: 100%;
-		height: 400px;
-		position: relative;
-		top: 0px;
-	}
-
-	.row {
-		width: 100%
-		height: 100px;
-	}
-
-	.cell {
-		width: 100px;
-		height: 100px;
-		float: left;
-	}
-	
-	.black {
-		background: #000;
-	}
-	
-
-
-
-</style>
-<body>
-	<div id="main">
-		<div id="container">
-			
-		</div>
-	</div>
-	
-
-</body>
-<script type="text/javascript">
-
 	var clock = null;   //定时器句柄
+	var main = document.getElementById("main");
+	var con = document.getElementById("container");
 
 //初始化
 	function init() {
-		for(var i=0; i<2; i++){
+		for(var i=0; i<4; i++){
 			crow();
+		}
+
+		main.onclick = function(ev) {
+			if(ev.target.className.indexOf('black') == -1) {
+
+			} else {
+				ev.target.className = 'cell';
+				score();				
+			}
 		}
 	}
 
@@ -66,10 +25,21 @@
 
 //方块运动
 	function move() {
-		var con = document.getElementById('container');
 		var top = parseInt(window.getComputedStyle(con , null)['top']);
 		top += 2;
 		con.style.top = top + 'px';
+
+		if(top == 0) {
+			crow();
+			con.style.top = '-100px';
+			drow();
+		}
+	}
+
+//计分
+	function score() {
+		score = document.getElementById("score");
+		score.innerHTML = parseInt(score.innerHTML)+1;
 	}
 
 //创建div.row
@@ -80,8 +50,17 @@
 		for(var i = 0; i < 4; i++) {
 			row.appendChild(cdiv(classes[i]));
 		}
-		document.getElementById('container').appendChild(row);
+		if(con.firstChild == null) {
+			con.appendChild(row);
+		} else {
+			con.insertBefore(row, con.firstChild);
+		}
 	}	
+
+//删除最后一行
+	function drow() {
+		con.removeChild(con.lastChild);
+	}
 
 //	创建DIV,className是其类名
 	function cdiv(className) {
@@ -99,24 +78,4 @@
 	}
 
 	init();
-	start();
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-</script>
-</html>
+	start();	
